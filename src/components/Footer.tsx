@@ -14,7 +14,7 @@ const Footer = () => {
           </a>
           . The source code is available on{" "}
           <a
-            href='https://github.com/burakorkmez/onlyfans'
+            href='https://github.com/Korveld/onlyhorse'
             target='_blank'
             rel='noreferrer'
             className='font-medium underline underline-offset-4'
