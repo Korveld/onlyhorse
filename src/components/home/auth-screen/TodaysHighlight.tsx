@@ -1,6 +1,5 @@
 "use client";
 import { CldVideoPlayer } from 'next-cloudinary';
-import 'next-cloudinary/dist/cld-video-player.css';
 
 const TodaysHighlight = () => {
   return (
