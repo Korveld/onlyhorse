@@ -4,20 +4,34 @@ import {useQuery} from "@tanstack/react-query";
 import {checkAuthStatus} from "@/app/auth/callback/actions";
 import {useEffect} from "react";
 import {useRouter} from "next/navigation";
+import {useKindeBrowserClient} from "@kinde-oss/kinde-auth-nextjs";
 
 const Page = () => {
   const router = useRouter();
+  const { user, isLoading: checkingAuth } = useKindeBrowserClient();
   const { data } = useQuery({
     queryKey: ["authCheck"],
     queryFn: async () => await checkAuthStatus(),
   });
 
   useEffect(() => {
-    if (data?.success || data?.success === false) {
-      // window.location.href = "/";
+    // first version before stripe integration
+    // if (data?.success || data?.success === false) {
+    //   // window.location.href = "/";
+    //   router.push("/");
+    // }
+    const stripeUrl = localStorage.getItem("stripeRedirectUrl");
+    if (stripeUrl && user?.email && !checkingAuth) {
+      localStorage.removeItem("stripeRedirectUrl");
+      window.location.href = stripeUrl + "?prefilled_email=" + user.email;
+    } else if (!user && !checkingAuth) {
       router.push("/");
     }
-  }, [data, router]);
+  }, [checkingAuth, router, user]);
+
+  if (!checkingAuth && data?.success) {
+    router.push("/");
+  }
 
   return (
     <div className="mt-20 w-full flex justify-center">

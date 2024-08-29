@@ -3,7 +3,7 @@ import {Heart, Image as ImageIcon, Video} from "lucide-react";
 import prisma from "@/db/prisma";
 import {formatNumber} from "@/lib/utils";
 
-const CoverImage = async () => {
+const CoverImage = async ({ adminName }: { adminName: string }) => {
   const imageCount = await prisma.post.count({
     where: {
       mediaType: "image"
@@ -37,7 +37,7 @@ const CoverImage = async () => {
       <div className="flex justify-between items-center absolute top-0 left-0 px-2 py-1 z-20 w-full">
         <div className="flex items-center gap-2">
           <div className="flex flex-col text-white">
-            <p className="font-bold">John Doe</p>
+            <p className="font-bold">{adminName}</p>
 
             <div className="flex gap-2 items-center">
               <div className="flex items-center gap-1">
