@@ -14,14 +14,25 @@ export const checkAuthStatus = async () => {
 
   // sign up
   if (!existingUser) {
-    await prisma.user.create({
-      data: {
-        id: user.id,
-        email: user.email!,
-        name: user.given_name + " " + user.family_name,
-        image: user.picture,
-      }
-    })
+    if (user.family_name) {
+      await prisma.user.create({
+        data: {
+          id: user.id,
+          email: user.email!,
+          name: user.given_name + " " + user.family_name,
+          image: user.picture,
+        }
+      });
+    } else {
+      await prisma.user.create({
+        data: {
+          id: user.id,
+          email: user.email!,
+          name: user.given_name || "",
+          image: user.picture,
+        }
+      });
+    }
   }
 
   return {success: true};
