@@ -10,6 +10,8 @@ const HomeScreen = async () => {
     where: {
       email: process.env.ADMIN_EMAIL,
     }
+  }).finally(() => {
+    prisma.$disconnect();
   });
   const user = await getUserProfileAction();
 

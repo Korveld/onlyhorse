@@ -12,6 +12,8 @@ const SuggestedProducts = async () => {
       }
     ],
     take: 3
+  }).finally(() => {
+    prisma.$disconnect();
   });
 
   return (

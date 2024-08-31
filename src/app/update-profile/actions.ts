@@ -10,8 +10,15 @@ export async function getUserProfileAction() {
 
 	if (!user) return null;
 
-	const currentUser = await prisma.user.findUnique({ where: { id: user.id } });
-	return currentUser;
+	const currentUser = await prisma.user.findUnique({
+		where: { id: user.id }
+	}).finally(() => {
+		prisma.$disconnect();
+	});
+
+	if (currentUser) return currentUser;
+
+	return null;
 }
 
 export async function updateUserProfileAction({ name, image }: { name: string; image: string }) {
@@ -28,6 +35,8 @@ export async function updateUserProfileAction({ name, image }: { name: string; i
 	const updatedUser = await prisma.user.update({
 		where: { id: user.id },
 		data: updatedFields,
+	}).finally(() => {
+		prisma.$disconnect();
 	});
 
 	revalidatePath("/update-profile");

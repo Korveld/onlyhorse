@@ -49,6 +49,8 @@ export async function POST(req: Request) {
         if (customerDetails.email) {
           const user = await prisma.user.findUnique({
             where: { email: customerDetails.email }
+          }).finally(() => {
+            prisma.$disconnect();
           });
 
           if (!user) throw new Error("User not found");
@@ -58,6 +60,8 @@ export async function POST(req: Request) {
             await prisma.user.update({
               where: { id: user.id },
               data: { customerId },
+            }).finally(() => {
+              prisma.$disconnect();
             });
           }
 
@@ -91,11 +95,15 @@ export async function POST(req: Request) {
                   startDate: new Date(),
                   endDate: endDate,
                 },
+              }).finally(() => {
+                prisma.$disconnect();
               });
 
               await prisma.user.update({
                 where: { id: user.id },
                 data: { isSubscribed: true },
+              }).finally(() => {
+                prisma.$disconnect();
               });
 
               // send a success email to the user
@@ -170,6 +178,8 @@ export async function POST(req: Request) {
                   size: true,
                   shippingAddress: true,
                 },
+              }).finally(() => {
+                prisma.$disconnect();
               });
 
               // send a success email to the user
@@ -232,11 +242,15 @@ export async function POST(req: Request) {
         const subscription = await stripe.subscriptions.retrieve((data.object as Stripe.Subscription).id);
         const user = await prisma.user.findUnique({
           where: { customerId: subscription.customer as string },
+        }).finally(() => {
+          prisma.$disconnect();
         });
         if (user) {
           await prisma.user.update({
             where: { id: user.id },
             data: { isSubscribed: false },
+          }).finally(() => {
+            prisma.$disconnect();
           });
         } else {
           console.error("User not found for the subscription deleted event.");
@@ -248,6 +262,8 @@ export async function POST(req: Request) {
         const session = await stripe.checkout.sessions.retrieve((data.object as Stripe.Checkout.Session).id);
         await prisma.order.delete({
           where: { id: session.metadata!.orderId },
+        }).finally(() => {
+          prisma.$disconnect();
         });
         break;
       }

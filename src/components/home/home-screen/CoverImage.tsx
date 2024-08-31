@@ -8,17 +8,23 @@ const CoverImage = async ({ adminName }: { adminName: string }) => {
     where: {
       mediaType: "image"
     }
+  }).finally(() => {
+    prisma.$disconnect();
   });
   const videoCount = await prisma.post.count({
     where: {
       mediaType: "video"
     }
+  }).finally(() => {
+    prisma.$disconnect();
   });
   // const totalLikes = await prisma.like.count();
   const totalLikes = await prisma.post.aggregate({
     _sum: {
       likes: true
     }
+  }).finally(() => {
+    prisma.$disconnect();
   });
 
   return (

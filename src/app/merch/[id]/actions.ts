@@ -9,7 +9,11 @@ export async function createCheckoutSessionAction({ productId, size }: { product
 
   if (!user) throw new Error("Unauthorized - you must be logged in to purchase products");
 
-  const product = await prisma.product.findUnique({ where: { id: productId } });
+  const product = await prisma.product.findUnique({
+    where: { id: productId }
+  }).finally(() => {
+    prisma.$disconnect();
+  });
 
   if (!product) throw new Error("Product not found");
 
@@ -20,6 +24,8 @@ export async function createCheckoutSessionAction({ productId, size }: { product
       price: product.price,
       size,
     },
+  }).finally(() => {
+    prisma.$disconnect();
   });
 
   // it's gonna prefill the email for the user

@@ -17,6 +17,8 @@ export async function checkProductPaidStatus(orderId: string) {
 			size: true,
 			shippingAddress: true,
 		},
+	}).finally(() => {
+		prisma.$disconnect();
 	});
 
 	if (!order) return false;

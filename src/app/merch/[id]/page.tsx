@@ -16,6 +16,8 @@ const Page = async ({
     where: {
       id: params.id,
     }
+  }).finally(() => {
+    prisma.$disconnect();
   });
 
   const products = await prisma.product.findMany({
@@ -23,6 +25,8 @@ const Page = async ({
       isArchived: false,
       id: { not: params.id }
     }
+  }).finally(() => {
+    prisma.$disconnect();
   });
 
   if (!currentProduct || currentProduct.isArchived) return notFound();

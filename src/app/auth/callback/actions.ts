@@ -10,7 +10,11 @@ export const checkAuthStatus = async () => {
     return {success: false};
   }
 
-  const existingUser = await prisma.user.findUnique({where: {id: user.id}});
+  const existingUser = await prisma.user.findUnique({
+    where: { id: user.id }
+  }).finally(() => {
+    prisma.$disconnect();
+  });
 
   // sign up
   if (!existingUser) {
@@ -22,6 +26,8 @@ export const checkAuthStatus = async () => {
           name: user.given_name + " " + user.family_name,
           image: user.picture,
         }
+      }).finally(() => {
+        prisma.$disconnect();
       });
     } else {
       await prisma.user.create({
@@ -31,6 +37,8 @@ export const checkAuthStatus = async () => {
           name: user.given_name || "",
           image: user.picture,
         }
+      }).finally(() => {
+        prisma.$disconnect();
       });
     }
   }

@@ -57,6 +57,8 @@ export async function createPostAction({
       isPublic,
       userId: admin.id,
     }
+  }).finally(() => {
+    prisma.$disconnect();
   });
 
   return {
@@ -78,6 +80,8 @@ export async function getAllProductsAction() {
         name: 'desc',
       }
     ]
+  }).finally(() => {
+    prisma.$disconnect();
   });
 
   return products;
@@ -93,6 +97,8 @@ export async function getLiveProductsAction() {
         name: 'desc',
       }
     ]
+  }).finally(() => {
+    prisma.$disconnect();
   });
 
   return products;
@@ -125,6 +131,8 @@ export async function addNewProductToStoreAction({
       price: priceInCents,
       image,
     }
+  }).finally(() => {
+    prisma.$disconnect();
   });
 
   return {
@@ -140,7 +148,11 @@ export async function toggleProductArchiveAction(productId: string) {
     throw new Error("Unauthorized");
   }
 
-  const product = await prisma.product.findUnique({ where: { id: productId } });
+  const product = await prisma.product.findUnique({
+    where: { id: productId }
+  }).finally(() => {
+    prisma.$disconnect();
+  });
 
   if (!product) {
     throw new Error("Product not found");
@@ -151,6 +163,8 @@ export async function toggleProductArchiveAction(productId: string) {
     data: {
       isArchived: !product.isArchived
     }
+  }).finally(() => {
+    prisma.$disconnect();
   });
 
   return { success: true, product: updatedProduct };

@@ -10,6 +10,8 @@ const UserProfile = async () => {
     where: {
       email: process.env.ADMIN_EMAIL,
     }
+  }).finally(() => {
+    prisma.$disconnect();
   });
 
   const currentUser = await getUserProfileAction();
